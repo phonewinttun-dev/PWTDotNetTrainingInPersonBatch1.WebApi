@@ -37,6 +37,13 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
             public bool DeleteFlag { get; set; }
         }
 
+        public class ProductResponseDto
+        {
+            public bool IsSuccess { get; set; }
+
+            public String Message { get; set; }
+        }
+
         [HttpGet]
         public IActionResult GetProducts()
         {
@@ -59,9 +66,45 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
                 return Ok(lst);
 
             }
-
-            
         }
 
+
+
+        [HttpPost]
+        public IActionResult CreateProduct(ProductDto request)
+        {
+            using (IDbConnection db = new SqlConnection(_stringBuilder.ConnectionString))
+            {
+                db.Open();
+
+                request.ProductID = Guid.NewGuid().ToString();
+
+                string query = @"INSERT INTO [dbo].[Tbl_Product]
+                                       ([ProductId]
+                                       ,[ProductCode]
+                                       ,[ProductName]
+                                       ,[Price]
+                                       ,[Quantity]
+                                       ,[DeleteFlag])
+                                 VALUES
+                                       (@ProductId
+                                       ,@ProductCode
+                                       ,@ProductName
+                                       ,@Price
+                                       ,@Quantity
+                                       ,@DeleteFlag)";
+                 
+                var result = db.Execute(query, request);
+                string message = result > 0 ? "Product created successfully." : "Failed to create product.";
+                
+                ProductResponseDto response = new ProductResponseDto()
+                {
+                    IsSuccess = result > 0,
+                    Message = message
+                };
+
+                return Ok(response);
+            }
+        }
     }
 }
