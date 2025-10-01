@@ -1,0 +1,6 @@
+@PWTDotNetTrainingInPersonBatch1.WebApi_HostAddress = http://localhost:5241
+
+GET {{PWTDotNetTrainingInPersonBatch1.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
