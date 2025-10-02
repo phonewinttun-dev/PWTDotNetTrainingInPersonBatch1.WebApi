@@ -26,9 +26,9 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         {
             public string? ProductID { get; set; }
 
-            public string ProductCode { get; set; }
+            public string? ProductCode { get; set; }
 
-            public string ProductName { get; set; }
+            public string? ProductName { get; set; }
 
             public decimal Price { get; set; }
 
@@ -147,6 +147,7 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         }
 
         [HttpPatch("{id}")]
+        [HttpPatch("id/{id}")]
         public IActionResult UpdateProduct(string id, [FromBody] ProductDto request)
         {
             using (IDbConnection db = new SqlConnection(_stringBuilder.ConnectionString))
@@ -215,6 +216,27 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteProduct(string id)
+        {
+            using (IDbConnection db = new SqlConnection(_stringBuilder.ConnectionString))
+            {
+                db.Open();
+
+                string deleteQuery = @"UPDATE [dbo].[tbl_Product]
+                               SET [DeleteFlag] = 1
+                               WHERE [ProductID] = @ProductID";
+
+                var result = db.Execute(deleteQuery, new { ProductID = id });
+
+                string message = result > 0 ? "Delete Successful." : "Delete Failed.";
+                return Ok(new ProductResponseDto
+                {
+                    IsSuccess = result > 0,
+                    Message = message
+                });
+            }
+        }
 
 
 
@@ -238,5 +260,6 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
 
 
 
-}
+
+    }
 }
