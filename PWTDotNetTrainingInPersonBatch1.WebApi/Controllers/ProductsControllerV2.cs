@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-
+using PWTDotNetTrainingInPersonBatch1.WebApi.Database.AppDbContextModels;
+using static PWTDotNetTrainingInPersonBatch1.WebApi.Controllers.ProductsController;
 
 namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
 {
@@ -18,16 +18,56 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         [HttpGet]
         public IActionResult GetProducts()
         {
-            
-            List<ProductDto> products = new List<string>()
-            {
-                "Product1",
-                "Product2",
-                "Product3"
-            };
+            //var item = db.TblProducts.FirstOrDefault(Product => Product.ProductId == id);
+            //if (item is null)
+            //{
+            //    return NotFound();
+            //}
+            //return Ok(item);
 
-            return Ok();
+            //var result = db.TblProducts.ToList();
+            //var lst = result.Select(product => new ProductDto
+            //{
+
+            //}).ToList();
+
+            //var result = db.TblProducts.ToList();
+
+
+            //List<ProductDto> lst = new List<ProductDto>();
+            //foreach (TblProduct product in result)
+            //{
+            //    lst.Add(new ProductDto
+            //    {
+            //        ProductID = product.ProductId,
+            //        ProductCode = product.ProductCode,
+            //        ProductName = product.ProductName,
+            //        Price = product.Price,
+            //        Quantity = product.Quantity,
+            //        DeleteFlag = product.DeleteFlag
+            //    });
+            //}
+
+            var result = db.TblProducts.ToList();
+            var lst = result.Select(product => new ProductDto
+            {
+                ProductID = product.ProductId,
+                ProductCode = product.ProductCode,
+                ProductName = product.ProductName,
+                Price = product.Price,
+                Quantity = product.Quantity,
+                DeleteFlag = product.DeleteFlag
+
+            }).ToList();
+
+
+            return Ok(lst);
         }
 
+        [HttpPost]
+        public IActionResult createProduct()
+        {
+            return Ok();
+        }
     }
 }
