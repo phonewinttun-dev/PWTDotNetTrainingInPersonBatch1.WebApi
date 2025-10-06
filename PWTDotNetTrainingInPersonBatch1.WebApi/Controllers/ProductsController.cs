@@ -224,8 +224,8 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
                 db.Open();
 
                 string deleteQuery = @"UPDATE [dbo].[tbl_Product]
-                               SET [DeleteFlag] = 1
-                               WHERE [ProductID] = @ProductID";
+                                       SET [DeleteFlag] = 1
+                                       WHERE [ProductID] = @ProductID";
 
                 var result = db.Execute(deleteQuery, new { ProductID = id });
 
@@ -237,28 +237,6 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
                 });
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }
