@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PWTDotNetTrainingInPersonBatch1.WebApi.Database.AppDbContextModels;
 using static PWTDotNetTrainingInPersonBatch1.WebApi.Controllers.ProductsController;
@@ -119,5 +120,51 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
             return Ok(response);
 
         }
+
+
+        [HttpPatch("{id}")]
+        [HttpPatch("id/{id}")]
+        public IActionResult UpdateProduct(string id, [FromBody] ProductDto request)
+        {
+            var item = db.TblProducts.FirstOrDefault(product => product.ProductId == id)
+
+
+            if (item is null)
+            {
+                return NotFound(new ProductResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Product Not Found!"
+                });
+            }
+
+            if (!string.IsNullOrEmpty(request.ProductCode))
+            {
+                item.ProductCode = request.ProductCode;
+            }
+            if (!string.IsNullOrEmpty(request.ProductName))
+            {
+                item.ProductName = request.ProductName;
+            }
+            if (request.Quantity > 0)
+            {
+                item.Quantity = request.Quantity;
+            }
+            if (request.Price > 0)
+            {
+                item.Price = request.Price;
+            }
+
+            return Ok(new ProductResponseDto
+            {
+                IsSuccess = db.SaveChanges() > 0,
+                Message = "Product updated successfully."
+            });
+        }
+
+        [HttpDelete("{id}")]
+
+
+
     }
 }
