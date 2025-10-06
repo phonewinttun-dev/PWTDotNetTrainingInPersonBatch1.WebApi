@@ -64,10 +64,60 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
             return Ok(lst);
         }
 
-        [HttpPost]
-        public IActionResult createProduct()
+        [HttpGet("{id}")]
+        public IActionResult GetProductById(string id)
         {
-            return Ok();
+            var product = db.TblProducts.FirstOrDefault(Product => Product.ProductId == id);
+            if (product is null)
+            {
+                return NotFound(new ProductResponseDto()
+                {
+                    IsSuccess = false,
+                    Message = "Product not found."
+                });
+            }
+
+            return Ok(new ProductResponseDto
+            {
+                IsSuccess = true,
+                Message = "Product found.",
+                Data = new ProductDto
+                {
+                    ProductID = product.ProductId,
+                    ProductCode = product.ProductCode,
+                    ProductName = product.ProductName,
+                    Price = product.Price,
+                    Quantity = product.Quantity,
+                    DeleteFlag = product.DeleteFlag
+                }
+            });
+        }
+
+        [HttpPost]
+        public IActionResult CreateProduct([FromBody] ProductDto request)
+        {
+            db.TblProducts.Add(new TblProduct
+            {
+                ProductId = Guid.NewGuid().ToString(),
+                ProductCode = request.ProductCode,
+                ProductName = request.ProductName,
+                Price = request.Price,
+                Quantity = request.Quantity,
+                DeleteFlag = request.DeleteFlag
+            });
+
+            var result = db.SaveChanges();
+
+            string message = result > 0 ? "Product created successfully." : "Failed to create product.";
+
+            ProductResponseDto response = new ProductResponseDto()
+            {
+                IsSuccess = result > 0,
+                Message = message
+            };
+
+            return Ok(response);
+
         }
     }
 }
