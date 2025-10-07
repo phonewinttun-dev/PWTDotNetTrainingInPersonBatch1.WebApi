@@ -126,7 +126,7 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         [HttpPatch("id/{id}")]
         public IActionResult UpdateProduct(string id, [FromBody] ProductDto request)
         {
-            var item = db.TblProducts.FirstOrDefault(product => product.ProductId == id)
+            var item = db.TblProducts.FirstOrDefault(product => product.ProductId == id);
 
 
             if (item is null)
@@ -163,7 +163,29 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        public IActionResult DeleteProduct(string id) 
+        {
+            var item = db.TblProducts.FirstOrDefault(product => product.ProductId == id);
+            
+            if (item is null)
+            {
+                return NotFound(new ProductResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Product Not Found!"
+                });
+            }
 
+            item.DeleteFlag = true;
+            var result = db.SaveChanges();
+            string message = result > 0 ? "Delete Successful." : "Delete Failed.";
+            return Ok(new ProductResponseDto
+            {
+                IsSuccess = result > 0,
+                Message = message
+            });
+            
+        }
 
 
     }
