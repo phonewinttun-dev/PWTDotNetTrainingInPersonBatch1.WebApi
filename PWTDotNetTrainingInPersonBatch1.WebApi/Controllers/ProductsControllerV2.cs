@@ -16,6 +16,16 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
             db = new AppDbContext();
         }
 
+        //private IQueryable<TblProduct> ProductQuery()
+        //{
+        //    return db.TblProducts.Where(product => product.DeleteFlag == false);
+        //}
+
+        //or you can also write like this
+        private IQueryable<TblProduct> ProductQuery =>
+            db.TblProducts.Where(product => product.DeleteFlag == false);
+        
+
         [HttpGet]
         public IActionResult GetProducts()
         {
@@ -49,8 +59,7 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
             //    });
             //}
 
-            var result = db.TblProducts
-                .Where(product => product.DeleteFlag == false)
+            var result = ProductQuery
                 .ToList();
             var lst = result.Select(product => new ProductDto
             {
@@ -70,8 +79,7 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetProductById(string id)
         {
-            var product = db.TblProducts
-                .Where(x => x.DeleteFlag == false)
+            var product = ProductQuery
                 .FirstOrDefault(Product => Product.ProductId == id);
             if (product is null)
             {
@@ -130,7 +138,7 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         [HttpPatch("id/{id}")]
         public IActionResult UpdateProduct(string id, [FromBody] ProductDto request)
         {
-            var item = db.TblProducts.FirstOrDefault(product => product.ProductId == id);
+            var item = ProductQuery.FirstOrDefault(product => product.ProductId == id);
 
 
             if (item is null)
@@ -169,7 +177,7 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteProduct(string id) 
         {
-            var item = db.TblProducts.FirstOrDefault(product => product.ProductId == id);
+            var item = ProductQuery.FirstOrDefault(product => product.ProductId == id);
             
             if (item is null)
             {
