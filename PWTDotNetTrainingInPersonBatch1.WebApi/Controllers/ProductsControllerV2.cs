@@ -49,7 +49,9 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
             //    });
             //}
 
-            var result = db.TblProducts.ToList();
+            var result = db.TblProducts
+                .Where(product => product.DeleteFlag == false)
+                .ToList();
             var lst = result.Select(product => new ProductDto
             {
                 ProductID = product.ProductId,
@@ -68,7 +70,9 @@ namespace PWTDotNetTrainingInPersonBatch1.WebApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetProductById(string id)
         {
-            var product = db.TblProducts.FirstOrDefault(Product => Product.ProductId == id);
+            var product = db.TblProducts
+                .Where(x => x.DeleteFlag == false)
+                .FirstOrDefault(Product => Product.ProductId == id);
             if (product is null)
             {
                 return NotFound(new ProductResponseDto()
